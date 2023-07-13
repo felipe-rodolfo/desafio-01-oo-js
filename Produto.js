@@ -1,65 +1,67 @@
-class Produtos {
+class Product {
 
-    constructor(nome, preco, qtdEstoque){
-        this.nome = nome;
-        this.preco = preco;
-        this.qtdEstoque = qtdEstoque;
+    constructor(name, price, quantityInStock = 0){
+        this.name = name;
+        this.price = price;
+        this.quantityInStock = quantityInStock;
     }    
     
 }
 
-class Estoque {
+class Stock {
+    products = [];
 
-    constructor(){
-        this.produtos = [];
-    }
-
-    addProduto(nome, preco, qtd){
-       if(nome.length > 0 && preco > 0 && qtd > 0){
-        const produto = new Produtos(nome, preco, qtd);
-        this.produtos.push(produto);
+    addProduct(product){
+       if(product instanceof Product){
+        this.products.push(product);
        } else {
         console.log(`Informe o nome, preço e quantidade corretamente.`);
        }
     }
 
-    removerProduto(nome){
-        if(nome.length > 0){
-            const indexRemover = this.produtos.findIndex((item) => nome == item.nome);
-            if(!indexRemover){
+    removeProduct(name){
+        if(name.length > 0){
+            const indexToRemover = this.products.findIndex((item) => name == item.name);
+            if(indexToRemover < 0){
                 console.log('Produto não encontrado')
             } else {
-                this.produtos.splice(indexRemover, 1);
+                this.products.splice(indexToRemover, 1);
             }
         } else {
             console.log('Erro: Informe o nome');
         }
     }
 
-    atualizarQuantidade(nome, quantidadeNova){
-        if(nome.length > 0 && quantidadeNova > 0){
-            const produtoEncontrado = this.produtos.find((item) => item.nome == nome);
-            if(!produtoEncontrado){
+    updateQuantity(name, updateQuantity){
+        if(name.length > 0 && typeof updateQuantity === 'number' && updateQuantity > 0){
+            const findProduct = this.products.find((item) => item.name == name);
+            if(!findProduct){
                 console.log('Produto não encontrado. Dgite um novo nome e tente novamente!');
             } else {
-                produtoEncontrado.qtdEstoque = quantidadeNova;
-                console.log(`Nova quantidade: ${produtoEncontrado.qtdEstoque}`);
+                findProduct.quantityInStock = updateQuantity;
+                console.log(`Nova quantidade: ${findProduct.quantityInStock}`);
             }
         } else {
             console.log('Erro: Informe o nome e a quantidade');
         }
     }
 
-    listarProdutos(){
-        console.log(this.produtos);
-        this.produtos.forEach((item) => console.log(`Nome: ${item.nome} - Preço: ${item.preco} - Quantidade: ${item.qtdEstoque}`));
+    listProducts(){
+        if(this.products.length > 0){
+            this.products.forEach((item) => console.log(`Nome: ${item.name} - Preço: ${item.price} - Quantidade: ${item.quantityInStock}`));
+        }
     }
 
 }
 
-const estoque = new Estoque();
-estoque.addProduto('Computador', 3800, 5);
-estoque.addProduto('Notebook', 5300, 7);
-//estoque.removerProduto('Notebook');
-estoque.atualizarQuantidade('Notebook', 5);
-estoque.listarProdutos();
+const stock = new Stock();
+const product1 = new Product('Computador', 3500, 2);
+const product2 = new Product('Notebook', 3800);
+
+stock.addProduct(product1);
+stock.addProduct(product2);
+stock.removeProduct('Notebook', 3);
+stock.updateQuantity('Notebook', 5);
+stock.listProducts();
+
+console.log(stock);
